@@ -156,6 +156,53 @@ a { color: var(--accent); text-decoration: none; }
 .card .read-more { font-size: .85rem; font-weight: 600; color: var(--accent); }
 .card .read-more::after { content: " →"; }
 
+/* 首页双栏布局：左侧目录树 + 右侧文章 */
+.home-layout {
+  max-width: 1000px; margin: 0 auto; padding: .5rem 1.5rem 3rem;
+  display: grid; grid-template-columns: 260px 1fr; gap: 2rem;
+  align-items: start;
+}
+.file-tree {
+  position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow: auto;
+  border: 1px solid var(--border); background: var(--surface);
+  border-radius: 14px; padding: 1rem 1.1rem; box-shadow: var(--shadow);
+}
+.tree-title {
+  font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-soft); margin: 0 0 .7rem;
+}
+.file-tree ul { list-style: none; margin: 0; padding: 0; }
+.file-tree ul ul { margin-left: .9rem; }
+.file-tree li { margin: 1px 0; }
+.file-tree summary {
+  display: flex; align-items: center; gap: .35rem; cursor: pointer;
+  padding: .28rem .45rem; border-radius: 7px; font-size: .88rem;
+  color: var(--heading); font-weight: 600; list-style: none;
+  transition: background .15s, color .15s;
+}
+.file-tree summary::-webkit-details-marker { display: none; }
+.file-tree summary:hover { background: var(--accent-weak); color: var(--accent-strong); }
+.folder-icon, .file-icon { font-size: .82rem; }
+.file-tree a {
+  display: flex; align-items: center; gap: .35rem;
+  padding: .24rem .45rem; border-radius: 7px; font-size: .85rem;
+  color: var(--text-soft); text-decoration: none; transition: color .15s, background .15s;
+}
+.file-tree a:hover { color: var(--heading); background: var(--accent-weak); }
+.tree-count {
+  margin-left: auto; font-size: .7rem; color: var(--text-soft);
+  background: var(--accent-weak); border-radius: 999px; padding: 0 .45rem;
+  line-height: 1.5;
+}
+.file-tree .empty { color: var(--text-soft); font-size: .85rem; margin: 0; }
+
+/* 按文件夹分组的文章区块 */
+.post-section { margin-bottom: 2.4rem; }
+.post-section .section-title {
+  display: flex; align-items: center; gap: .45rem; margin-bottom: 1rem;
+}
+.post-section .section-title .folder-icon { font-size: .9rem; }
+
 /* 页脚 */
 .site-footer {
   max-width: 1000px; margin: 0 auto; padding: 0 1.5rem 3rem;
@@ -163,7 +210,9 @@ a { color: var(--accent); text-decoration: none; }
 }
 .site-footer .footer-line { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
 
-@media (max-width: 640px) {
+@media (max-width: 820px) {
+  .home-layout { grid-template-columns: 1fr; padding: .5rem 1rem 2.5rem; }
+  .file-tree { position: static; max-height: 18rem; }
   .nav-inner { padding: .6rem 1rem; }
   .hero { padding: 3.5rem 1rem 2rem; }
   .posts { padding: .5rem 1rem 2.5rem; }
@@ -171,7 +220,7 @@ a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
 <body>
-<header class="site-nav"><div class="nav-inner"><a class="nav-brand" href="index.html"><span class="dot"></span>Urim 的博客</a><div class="nav-links"><a href="index.html" class="active">首页</a><a href="about.html">关于</a><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select></div></div></header><section class="hero"><h1>你好，我是 <span class="grad">Urim</span></h1><p class="tagline">记录技术、思考与日常</p><p class="note">你好，我是 Urim——在这里记录 AI / 硬件 / 学习路上的想法。</p></section><section class="posts"><h2 class="section-title">最近文章 · 4 篇</h2><div class="post-grid"><a class="card" href="posts/2026-08-15-welcome.html"><div class="card-meta"><time>2026-08-15</time><span class="tag">随笔</span><span class="tag">开始</span></div><h3>欢迎来到我的博客</h3><p>第一篇文章：关于这个博客，以及我会在这里写什么。</p><span class="read-more">阅读全文</span></a><a class="card" href="posts/writing-demo.html"><div class="card-meta"><time>2026-08-14</time><span class="tag">Markdown</span><span class="tag">示例</span></div><h3>一篇展示能力的示例文章</h3><p>用这篇文章展示博客支持的排版能力：公式、代码、任务列表、表格、脚注与定义列表。</p><span class="read-more">阅读全文</span></a><a class="card" href="posts/value-predictor.html"><div class="card-meta"><time>2026-08-07</time></div><h3>value predictor</h3><p>论文：Practical data value speculation for future high-end processors --- 第一部分：论文要解决的根本问题 现代处理器靠乱序执行来提升性能，但真正的数据依赖（True Dat…</p><span class="read-more">阅读全文</span></a><a class="card" href="posts/samie-lsq.html"><div class="card-meta"><time>2026-08-01</time></div><h3>SAMIE-LSQ</h3><p>基于组相联的多指令条目加载/存储队列 1、介绍 论文：SAMIE-LSQ: Set-Associative Multiple-Instruction Entry Load/Store Queue 在现代高性能处理器（如CPU）中，加载/存储…</p><span class="read-more">阅读全文</span></a></div></section><footer class="site-footer"><div class="footer-line">© Urim</div></footer>
+<header class="site-nav"><div class="nav-inner"><a class="nav-brand" href="index.html"><span class="dot"></span>Urim 的博客</a><div class="nav-links"><a href="index.html" class="active">首页</a><a href="about.html">关于</a><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select></div></div></header><section class="hero"><h1>你好，我是 <span class="grad">Urim</span></h1><p class="tagline">记录技术、思考与日常</p><p class="note">你好，我是 Urim——在这里记录 AI / 硬件 / 学习路上的想法。</p></section><div class="home-layout"><aside class="file-tree"><h2 class="tree-title">📂 文章目录</h2><ul><li class="folder-item"><details open><summary><span class="folder-icon">📁</span>AI<span class="tree-count">1</span></summary><ul><li class="file-item"><a href="posts/llm-notes.html"><span class="file-icon">📄</span>大语言模型学习笔记</a></li></ul></details></li><li class="folder-item"><details open><summary><span class="folder-icon">📁</span>示例<span class="tree-count">1</span></summary><ul><li class="file-item"><a href="posts/writing-demo.html"><span class="file-icon">📄</span>一篇展示能力的示例文章</a></li></ul></details></li><li class="folder-item"><details open><summary><span class="folder-icon">📁</span>随笔<span class="tree-count">1</span></summary><ul><li class="file-item"><a href="posts/2026-08-15-welcome.html"><span class="file-icon">📄</span>欢迎来到我的博客</a></li></ul></details></li><li class="file-item"><a href="posts/value-predictor.html"><span class="file-icon">📄</span>value predictor</a></li><li class="file-item"><a href="posts/samie-lsq.html"><span class="file-icon">📄</span>SAMIE-LSQ</a></li></ul></aside><main class="home-main"><section class="post-section"><h2 class="section-title"><span class="folder-icon">📁</span>AI<span class="tree-count">1</span></h2><div class="post-grid"><a class="card" href="posts/llm-notes.html"><div class="card-meta"><time>2026-08-15</time><span class="tag">AI</span><span class="tag">LLM</span></div><h3>大语言模型学习笔记</h3><p>记录 LLM 基础概念的一点笔记，测试 AI 分类文件夹。</p><span class="read-more">阅读全文</span></a></div></section><section class="post-section"><h2 class="section-title"><span class="folder-icon">📁</span>未分类<span class="tree-count">2</span></h2><div class="post-grid"><a class="card" href="posts/value-predictor.html"><div class="card-meta"><time>2026-08-07</time></div><h3>value predictor</h3><p>论文：Practical data value speculation for future high-end processors --- 第一部分：论文要解决的根本问题 现代处理器靠乱序执行来提升性能，但真正的数据依赖（True Dat…</p><span class="read-more">阅读全文</span></a><a class="card" href="posts/samie-lsq.html"><div class="card-meta"><time>2026-08-01</time></div><h3>SAMIE-LSQ</h3><p>基于组相联的多指令条目加载/存储队列 1、介绍 论文：SAMIE-LSQ: Set-Associative Multiple-Instruction Entry Load/Store Queue 在现代高性能处理器（如CPU）中，加载/存储…</p><span class="read-more">阅读全文</span></a></div></section><section class="post-section"><h2 class="section-title"><span class="folder-icon">📁</span>示例<span class="tree-count">1</span></h2><div class="post-grid"><a class="card" href="posts/writing-demo.html"><div class="card-meta"><time>2026-08-14</time><span class="tag">Markdown</span><span class="tag">示例</span></div><h3>一篇展示能力的示例文章</h3><p>用这篇文章展示博客支持的排版能力：公式、代码、任务列表、表格、脚注与定义列表。</p><span class="read-more">阅读全文</span></a></div></section><section class="post-section"><h2 class="section-title"><span class="folder-icon">📁</span>随笔<span class="tree-count">1</span></h2><div class="post-grid"><a class="card" href="posts/2026-08-15-welcome.html"><div class="card-meta"><time>2026-08-15</time><span class="tag">随笔</span><span class="tag">开始</span></div><h3>欢迎来到我的博客</h3><p>第一篇文章：关于这个博客，以及我会在这里写什么。</p><span class="read-more">阅读全文</span></a></div></section></main></div><footer class="site-footer"><div class="footer-line">© Urim · 共 5 篇</div></footer>
 <script>
 (function () {
   var KEY = 'md2html-theme';
