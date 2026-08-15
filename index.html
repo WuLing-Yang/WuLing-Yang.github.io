@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urim 的博客</title>
+<style>
+
+:root {
+  --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, "PingFang SC",
+               "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  --radius: 10px;
+}
+:root {
+  color-scheme: light;
+  --bg: #f4f5f9;
+  --surface: #ffffff;
+  --text: #24292f;
+  --text-soft: #57606a;
+  --heading: #0d1117;
+  --accent: #4f5dd0;
+  --accent-strong: #3d49b5;
+  --accent-weak: #eef1ff;
+  --border: #d9dfe8;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 6px 24px rgba(20, 30, 60, .07);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0b0f17;
+    --surface: #111827;
+    --text: #d5dbe4;
+    --text-soft: #8b95a5;
+    --heading: #f3f4f6;
+    --accent: #818cf8;
+    --accent-strong: #a5b4fc;
+    --accent-weak: rgba(129, 140, 248, .12);
+    --border: #2a3441;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 28px rgba(0, 0, 0, .4);
+  }
+}
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f5f9; --surface: #ffffff; --text: #24292f; --text-soft: #57606a;
+  --heading: #0d1117; --accent: #4f5dd0; --accent-strong: #3d49b5;
+  --accent-weak: #eef1ff; --border: #d9dfe8;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 6px 24px rgba(20, 30, 60, .07);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b0f17; --surface: #111827; --text: #d5dbe4; --text-soft: #8b95a5;
+  --heading: #f3f4f6; --accent: #818cf8; --accent-strong: #a5b4fc;
+  --accent-weak: rgba(129, 140, 248, .12); --border: #2a3441;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 28px rgba(0, 0, 0, .4);
+}
+html[data-theme="paper"] {
+  color-scheme: light;
+  --bg: #f3ead6; --surface: #fbf6e9; --text: #43372a; --text-soft: #8a7a63;
+  --heading: #2c2418; --accent: #a06a2f; --accent-strong: #8a5a26;
+  --accent-weak: rgba(160, 106, 47, .13); --border: #e0d2b4;
+  --shadow: 0 1px 2px rgba(90, 70, 30, .06), 0 6px 24px rgba(90, 70, 30, .08);
+}
+html[data-theme="blue"] {
+  color-scheme: light;
+  --bg: #e8eef6; --surface: #fbfdff; --text: #233140; --text-soft: #5d6b7b;
+  --heading: #16212e; --accent: #2764a8; --accent-strong: #1d4f8a;
+  --accent-weak: rgba(39, 100, 168, .12); --border: #c9d6e4;
+  --shadow: 0 1px 2px rgba(22, 60, 100, .06), 0 6px 24px rgba(22, 60, 100, .08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; font-family: var(--font-sans); font-size: 16px; line-height: 1.75;
+  color: var(--text); background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+
+/* 顶部导航 */
+.site-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1000px; margin: 0 auto; padding: .75rem 1.5rem;
+  display: flex; align-items: center; gap: 1.25rem;
+}
+.nav-brand {
+  font-weight: 700; color: var(--heading); letter-spacing: .02em;
+  display: flex; align-items: center; gap: .5rem;
+}
+.nav-brand .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: linear-gradient(135deg, #818cf8, #4f5dd0);
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+.nav-links { margin-left: auto; display: flex; align-items: center; gap: .4rem; }
+.nav-links a {
+  color: var(--text-soft); padding: .35rem .8rem; border-radius: 8px;
+  font-size: .92rem; transition: color .15s, background .15s;
+}
+.nav-links a:hover { color: var(--heading); background: var(--accent-weak); }
+.nav-links a.active { color: var(--accent-strong); background: var(--accent-weak); font-weight: 600; }
+.theme-select {
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: .28rem .55rem; font-size: .8rem; font-family: inherit; cursor: pointer;
+}
+.theme-select:hover { border-color: var(--accent); }
+.theme-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Hero */
+.hero { max-width: 1000px; margin: 0 auto; padding: 5.5rem 1.5rem 3rem; text-align: center; }
+.hero h1 {
+  font-size: clamp(2.4rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -.02em;
+  margin: 0 0 .6rem; color: var(--heading);
+}
+.hero h1 .grad {
+  background: linear-gradient(120deg, #818cf8, #4f5dd0 55%, #e07a5f);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero .tagline { font-size: 1.15rem; color: var(--text-soft); margin: 0 0 1rem; }
+.hero .note { font-size: .95rem; color: var(--text-soft); max-width: 34rem; margin: 0 auto; }
+
+/* 文章列表 */
+.posts { max-width: 1000px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+.section-title {
+  font-size: 1.05rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-soft); margin: 1.2rem 0 1.2rem .1rem;
+}
+.post-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.2rem;
+}
+.card {
+  display: block; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem 1.5rem; color: var(--text);
+  box-shadow: var(--shadow); transition: transform .18s ease, box-shadow .18s ease, border-color .18s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(20, 30, 60, .12); border-color: var(--accent); }
+.card-meta { display: flex; align-items: center; gap: .6rem; font-size: .8rem; color: var(--text-soft); }
+.card-meta time { white-space: nowrap; }
+.card-meta .tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+.card-meta .tag {
+  font-size: .72rem; color: var(--accent-strong); background: var(--accent-weak);
+  padding: .1rem .5rem; border-radius: 999px;
+}
+.card h3 { font-size: 1.2rem; font-weight: 700; color: var(--heading); margin: .7rem 0 .45rem; }
+.card h3:hover { color: var(--accent); }
+.card p { font-size: .9rem; color: var(--text-soft); margin: 0 0 .8rem; }
+.card .read-more { font-size: .85rem; font-weight: 600; color: var(--accent); }
+.card .read-more::after { content: " →"; }
+
+/* 页脚 */
+.site-footer {
+  max-width: 1000px; margin: 0 auto; padding: 0 1.5rem 3rem;
+  text-align: center; font-size: .85rem; color: var(--text-soft);
+}
+.site-footer .footer-line { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+
+@media (max-width: 640px) {
+  .nav-inner { padding: .6rem 1rem; }
+  .hero { padding: 3.5rem 1rem 2rem; }
+  .posts { padding: .5rem 1rem 2.5rem; }
+}
+</style>
+</head>
+<body>
+<header class="site-nav"><div class="nav-inner"><a class="nav-brand" href="index.html"><span class="dot"></span>Urim 的博客</a><div class="nav-links"><a href="index.html" class="active">首页</a><a href="about.html">关于</a><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select></div></div></header><section class="hero"><h1>你好，我是 <span class="grad">Urim</span></h1><p class="tagline">记录技术、思考与日常</p><p class="note">你好，我是 Urim——在这里记录 AI / 硬件 / 学习路上的想法。</p></section><section class="posts"><h2 class="section-title">最近文章 · 2 篇</h2><div class="post-grid"><a class="card" href="posts/2026-08-15-welcome.html"><div class="card-meta"><time>2026-08-15</time><span class="tag">随笔</span><span class="tag">开始</span></div><h3>欢迎来到我的博客</h3><p>第一篇文章：关于这个博客，以及我会在这里写什么。</p><span class="read-more">阅读全文</span></a><a class="card" href="posts/writing-demo.html"><div class="card-meta"><time>2026-08-14</time><span class="tag">Markdown</span><span class="tag">示例</span></div><h3>一篇展示能力的示例文章</h3><p>用这篇文章展示博客支持的排版能力：公式、代码、任务列表、表格、脚注与定义列表。</p><span class="read-more">阅读全文</span></a></div></section><footer class="site-footer"><div class="footer-line">© Urim</div></footer>
+<script>
+(function () {
+  var KEY = 'md2html-theme';
+  var themeSel = document.getElementById('theme-select');
+  if (themeSel) {
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved && ['light', 'dark', 'paper', 'blue', 'system'].indexOf(saved) >= 0) {
+      document.documentElement.setAttribute('data-theme', saved);
+      themeSel.value = saved;
+    } else {
+      themeSel.value = 'system';
+    }
+    themeSel.addEventListener('change', function () {
+      var v = themeSel.value;
+      document.documentElement.setAttribute('data-theme', v);
+      try { localStorage.setItem(KEY, v); } catch (e) {}
+    });
+  }
+})();
+</script>
+</body>
+</html>
