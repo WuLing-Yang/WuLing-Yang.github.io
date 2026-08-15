@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>欢迎来到我的博客</title>
+<title>SAMIE-LSQ</title>
 <style>
 
 * { box-sizing: border-box; }
@@ -460,38 +460,92 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 </head>
 <body>
-<div class="topbar"><div class="topbar-inner"><div class="brand"><a class="back-link" href="../index.html">←</a><span class="dot"></span>Urim 的博客</div><div class="spacer"></div><div class="meta">2026-08-15-welcome.md · 2026-08-15 12:51</div><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select><button class="topbar-toggle" type="button">目录</button></div></div>
+<div class="topbar"><div class="topbar-inner"><div class="brand"><a class="back-link" href="../index.html">←</a><span class="dot"></span>Urim 的博客</div><div class="spacer"></div><div class="meta">SAMIE-LSQ.md · 2026-08-15 12:51</div><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select><button class="topbar-toggle" type="button">目录</button></div></div>
 <div class="layout">
-<nav id="toc"><p class="toc-title">目录</p><ul><li><a href="#sec-1">这里会写什么</a></li><li><a href="#sec-2">关于这个博客本身</a></li><li><a href="#sec-3">开始吧</a></li></ul></nav><main>
-<div class="doc-head"><span class="doc-label">✍️ Urim</span><div class="doc-meta"><span>📄 来源：2026-08-15-welcome.md</span><span>🕒 生成于 2026-08-15 12:51</span></div></div>
-<p>你好，欢迎来到我的博客。这里是 Urim，一个对技术与世界充满好奇的人。</p>
-<h2 id="sec-1">这里会写什么</h2>
-<p>这个博客是我整理思考、记录学习的地方，主要围绕：</p>
-<ul>
-<li><strong>AI / LLM</strong>：大模型原理、工程实践与一些粗浅的理解</li>
-<li><strong>硬件 / 体系结构</strong>：芯片、存储、性能调优</li>
-<li><strong>读书与生活</strong>：偶尔的随笔与感悟</li>
-</ul>
-<h2 id="sec-2">关于这个博客本身</h2>
-<p>它是由一个简单的 Python 脚本生成的静态站点：</p>
+<nav id="toc"><p class="toc-title">目录</p><ul><li><a href="#1">1、介绍</a></li><li><a href="#2">2、技术详解</a><ul><li><a href="#21">2.1、核心结构</a></li><li><a href="#22">2.2、工作流程</a></li><li><a href="#23">2.3、关键扩展优化</a></li></ul></li></ul></nav><main>
+<div class="doc-head"><span class="doc-label">✍️ Urim</span><div class="doc-meta"><span>📄 来源：SAMIE-LSQ.md</span><span>🕒 生成于 2026-08-15 12:51</span></div></div>
+<h1 id="sec-1-2">基于组相联的多指令条目加载/存储队列</h1>
+<h2 id="1">1、介绍</h2>
+<p>论文：SAMIE-LSQ: Set-Associative Multiple-Instruction Entry Load/Store Queue</p>
+<p>在现代高性能处理器（如CPU）中，<strong>加载/存储队列（LSQ）</strong> 是一个关键但非常复杂的部件。它的主要职责是<strong>内存消歧</strong>——即确保“加载”（读内存）指令能正确地获取到之前“存储”（写内存）指令写入的最新数据，尤其是在指令乱序执行的情况下。这个操作需要将新产生的内存地址与队列中所有其他指令的地址进行快速比较，这既耗能又耗时，是处理器的“热点”之一。</p>
+<p>降低LSQ开销的方法：</p>
 <ol>
-<li>用 Markdown 写文章，放在 <code>content/</code> 目录</li>
-<li>运行 <code>python build.py</code>，自动生成首页和文章页</li>
-<li>支持代码高亮、LaTeX 公式、任务列表、脚注、多主题切换</li>
+<li><strong>依赖预测（Dependence Prediction）</strong>：预测load是否依赖之前的store。预测错误会导致流水线冲刷，开销大。</li>
+<li><strong>延迟执行/重执行（Lazy Execution / Re-execution）</strong>：先执行load，在提交前再验证。需要额外端口，且可能多次执行。</li>
+<li><strong>Load-to-Load 转发（Forwarding among loads）</strong>：将数据从一个load转发给另一个load，以减少缓存访问。但要求load之间能互相转发，增加了复杂性。</li>
+<li><strong>布隆过滤器（Bloom Filter）</strong>：使用哈希编码快速过滤无依赖的指令，减少LSQ查找。但并未降低LSQ本身的复杂性和功耗。</li>
+<li><strong>分段LSQ（Segmented LSQ）</strong>：将LSQ分段，按顺序检查，增加了延迟。</li>
+<li><strong>ARB（分布式LSQ）</strong>：将LSQ分成多个Bank，根据地址分类。但论文通过实验证明，为了达到足够性能，ARB需要非常多的Bank和条目，导致硬件开销和泄漏功耗巨大，且性能损失明显。</li>
 </ol>
-<p>如果喜欢的话，我还会把之前整理的一些技术笔记慢慢搬过来。</p>
-<h2 id="sec-3">开始吧</h2>
-<p>在 <code>content/</code> 下新建一个 <code>.md</code> 文件，加上这样的开头就能发布一篇文章：</p>
-<pre class="codehilite" data-lang="markdown"><code>---
-title: 我的文章标题
-date: 2026-08-16
-tags: [技术, 随笔]
-<span class="gu">summary: 一句话摘要。</span>
-<span class="gu">---</span>
-
-正文从这里开始……
-</code></pre>
-<p>现在，去翻翻文章列表吧。</p>
+<p>SAMIE-LSQ 采用了以下设计：</p>
+<ul>
+<li><strong>组相联（Set-Associative）</strong>：不像传统设计那样完全随机地存放指令，而是根据指令访问的<strong>内存地址</strong>，将其“路由”到特定的组（Bank）中。</li>
+<li><strong>多指令条目（Multiple-Instruction Entry）</strong>：每个LSQ条目不再只存放一条指令，而是可以存放<strong>多条访问同一缓存行的指令</strong>。</li>
+</ul>
+<h2 id="2">2、技术详解</h2>
+<h3 id="21">2.1、核心结构</h3>
+<ol>
+<li><strong>DistribLSQ（分布式LSQ，主存储区）</strong>
+<ul>
+<li><strong>结构</strong>：这是主体，由 <strong>64个Bank</strong> 组成。每个Bank有 <strong>2个条目</strong>，每个条目有 <strong>8个槽位</strong>。</li>
+<li><strong>分配规则</strong>：指令根据其<strong>内存地址</strong>（具体是索引位）被直接映射（Direct-Mapped）到对应的Bank。例如，地址A总是进入Bank 0。</li>
+<li><strong>查找方式</strong>：在Bank内部，采用<strong>全相联</strong>方式查找。即新地址只与<strong>同一个Bank内</strong>所有条目的地址进行比较，而不是与全局所有条目比较。这极大地减少了比较次数。</li>
+<li><strong>目的</strong>：通过精细的Bank划分，将地址比较活动限制在局部，节省大量动态功耗。</li>
+</ul>
+</li>
+<li><strong>SharedLSQ（共享LSQ，溢出区）</strong>
+<ul>
+<li><strong>结构</strong>：一个较小的 <strong>8条目</strong> 全相联结构，每个条目也有8个槽位。</li>
+<li><strong>作用</strong>：当DistribLSQ中对应的Bank已满（比如两个条目都被占用且没有空闲槽位），指令会被放入SharedLSQ。它相当于一个“公共溢出区”，用于处理Bank冲突。</li>
+<li><strong>查找方式</strong>：新地址需要与DistribLSQ中<strong>对应Bank</strong>的地址 <strong>和</strong> <strong>SharedLSQ中所有条目</strong>的地址进行比较。虽然比单独查DistribLSQ稍多，但仍远少于全相联比较。</li>
+</ul>
+</li>
+<li><strong>AddrBuffer（地址缓冲，等待区）</strong>
+<ul>
+<li><strong>结构</strong>：一个简单的 <strong>64条目</strong> FIFO（先进先出）缓冲。</li>
+<li><strong>作用</strong>：如果DistribLSQ和SharedLSQ都满了，指令会先进入此缓冲区等待。这些指令暂时无法访问缓存，直到有空间被移入前两个队列。</li>
+<li><strong>特点</strong>：它是一个简单结构，不进行耗能的关联比较，仅做存储。</li>
+</ul>
+</li>
+</ol>
+<h3 id="22">2.2、工作流程</h3>
+<ol>
+<li><strong>指令入队</strong>：当一个内存指令的地址被计算出来时，它被送入LSQ。
+<ul>
+<li><strong>第一步</strong>：尝试进入<strong>DistribLSQ</strong>。根据地址找到对应Bank，检查是否有相同地址的条目。如果有，则占用一个空闲槽位；如果没有，则分配一个新条目。</li>
+<li><strong>第二步</strong>：如果DistribLSQ失败（如Bank满），则尝试进入<strong>SharedLSQ</strong>。</li>
+<li><strong>第三步</strong>：如果SharedLSQ也失败，则进入<strong>AddrBuffer</strong>等待。</li>
+</ul>
+</li>
+<li><strong>内存消歧（地址比较）</strong>：这是LSQ的核心功能。
+<ul>
+<li><strong>加载（Load）指令</strong>：其地址需要与所有<strong>更早的、地址未知的存储（Store）指令</strong>进行比较，以确保读到最新数据。</li>
+<li><strong>存储（Store）指令</strong>：其地址需要与所有<strong>更晚的、地址已知的加载（Load）指令</strong>进行比较，以便将数据转发给它们。</li>
+<li><strong>SAMIE-LSQ的优化</strong>：由于地址被分散到64个Bank中，一次比较操作仅涉及 <strong>1个Bank（最多2个地址） + SharedLSQ（8个地址）</strong>，而不是传统方式的<strong>128个地址</strong>。此外，每个条目还存储了指令的<strong>年龄标识（Age ID，即指令在重排序缓冲中的位置）</strong>，用于快速确定指令间的先后顺序，避免比较完整的程序顺序。</li>
+</ul>
+</li>
+<li><strong>死锁避免</strong>：
+<ul>
+<li>极端情况下，最老的指令可能在AddrBuffer中等待，而它所需的LSQ空间被更年轻的指令占满，导致系统无法推进（死锁）。</li>
+<li>论文的解决方案是：<strong>检测到此情况时，直接冲刷（Flush）整个流水线</strong>。由于最老指令会被重新取指并最先进入LSQ，问题得以解决。论文称此情况极少发生。</li>
+</ul>
+</li>
+</ol>
+<h3 id="23">2.3、关键扩展优化</h3>
+<ol>
+<li><strong>缓存物理位置（减少Dcache能耗）</strong>
+<ul>
+<li>当<strong>第一条</strong>访问某缓存行的指令进入LSQ并访问L1数据缓存（Dcache）后，该缓存行在Dcache中的<strong>具体位置（第几组第几路）</strong> 会被记录下来，存入LSQ的对应条目。</li>
+<li>后续<strong>同一条目内的其他指令</strong>，在访问Dcache时，<strong>无需再比较标签（Tag）</strong>，也<strong>无需读取所有路（Ways）</strong>，而是直接根据记录的位置，从唯一的那一路读取数据。这就像把一个组相联缓存变成了直接映射缓存，能耗和延迟都大大降低。</li>
+</ul>
+</li>
+<li><strong>缓存地址转换（减少DTLB能耗）</strong>
+<ul>
+<li>类似地，当第一条指令完成虚拟地址到物理地址的转换（查询DTLB）后，转换结果被缓存在LSQ条目中。</li>
+<li>后续同一条目内的指令<strong>无需再访问DTLB</strong>，直接使用缓存的物理地址，节省了大量TLB查找能耗。</li>
+</ul>
+</li>
+</ol>
 
 </main>
 </div>
