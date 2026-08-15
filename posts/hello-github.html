@@ -460,14 +460,16 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 </head>
 <body>
-<div class="topbar"><div class="topbar-inner"><div class="brand"><a class="back-link" href="../index.html">←</a><span class="dot"></span>Urim 的博客</div><div class="spacer"></div><div class="meta">随笔/hello-github.md · 2026-08-15 13:21</div><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select><button class="topbar-toggle" type="button">目录</button></div></div>
+<div class="topbar"><div class="topbar-inner"><div class="brand"><a class="back-link" href="../index.html">←</a><span class="dot"></span>Urim 的博客</div><div class="spacer"></div><div class="meta">随笔/hello-github.md · 2026-08-15 13:22</div><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select><button class="topbar-toggle" type="button">目录</button></div></div>
 <div class="layout">
 <main>
-<div class="doc-head"><span class="doc-label">✍️ Urim</span><div class="doc-meta"><span>📄 来源：随笔/hello-github.md</span><span>🕒 生成于 2026-08-15 13:21</span></div></div>
+<div class="doc-head"><span class="doc-label">✍️ Urim</span><div class="doc-meta"><span>📄 来源：随笔/hello-github.md</span><span>🕒 生成于 2026-08-15 13:22</span></div></div>
 <p>从今天起，这个博客用 <code>deploy.py</code> 一键发布：</p>
 <pre class="codehilite" data-lang="bash"><code><span class="nb">cd</span><span class="w"> </span>E:/workspace/Record/blog
 python<span class="w"> </span>deploy.py<span class="w">            </span><span class="c1"># 构建 + 自动 commit + 推送</span>
 python<span class="w"> </span>deploy.py<span class="w"> </span><span class="s2">&quot;自定义信息&quot;</span><span class="w">  </span><span class="c1"># 自定义 commit 信息</span>
+python<span class="w"> </span>deploy.py<span class="w"> </span>--full<span class="w">     </span><span class="c1"># 强制全量重建</span>
+python<span class="w"> </span>deploy.py<span class="w"> </span>--no-push<span class="w">  </span><span class="c1"># 只构建不推送</span>
 </code></pre>
 <p>增量编译只处理变化的文章，推送更快。</p>
 
