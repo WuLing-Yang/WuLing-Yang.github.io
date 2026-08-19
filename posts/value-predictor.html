@@ -460,13 +460,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 </head>
 <body>
-<div class="topbar"><div class="topbar-inner"><div class="brand"><a class="back-link" href="../index.html">←</a><span class="dot"></span>Urim 的博客</div><div class="spacer"></div><div class="meta">value predictor.md · 2026-08-15 13:47</div><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select><button class="topbar-toggle" type="button">目录</button></div></div>
+<div class="topbar"><div class="topbar-inner"><div class="brand"><a class="back-link" href="../index.html">←</a><span class="dot"></span>Urim 的博客</div><div class="spacer"></div><div class="meta">预测器/value predictor.md · 2026-08-19 10:10</div><select class="theme-select" id="theme-select" title="切换主题"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="paper">米黄护眼</option><option value="blue">蓝灰</option></select><button class="topbar-toggle" type="button">目录</button></div></div>
 <div class="layout">
-<nav id="toc"><p class="toc-title">目录</p><ul><li><a href="#practical-data-value-speculation-for-future-high-end-processors">论文：Practical data value speculation for future high-end processors</a></li><li><a href="#sec-2-3">第一部分：论文要解决的根本问题</a></li><li><a href="#sec-3-2">第二部分：两大核心技术原理</a><ul><li><a href="#fpc">技术一：FPC（前向概率计数器）—— 解决“误预测代价太高”</a></li><li><a href="#vtage">技术二：VTAGE（值标记几何预测器）—— 解决“背靠背预测瓶颈”</a></li></ul></li><li><a href="#sec-6-1">第三部分：完整工作流程</a><ul><li><a href="#fetch">阶段一：取指（Fetch）</a></li><li><a href="#dispatchexecute">阶段二：分派/执行（Dispatch/Execute）</a></li><li><a href="#verifycommit">阶段三：验证/提交（Verify/Commit）</a></li><li><a href="#update">阶段四：学习/更新（Update）</a></li></ul></li><li><a href="#sec-11">第四部分：整个系统的全景图</a></li><li><a href="#sec-12">第五部分：总结</a></li></ul></nav><main>
-<div class="doc-head"><span class="doc-label">✍️ Urim</span><div class="doc-meta"><span>📄 来源：value predictor.md</span><span>🕒 生成于 2026-08-15 13:47</span></div></div>
-<h2 id="practical-data-value-speculation-for-future-high-end-processors">论文：Practical data value speculation for future high-end processors</h2>
+<nav id="toc"><p class="toc-title">目录</p><ul><li><a href="#sec-2">第一部分：论文要解决的根本问题</a></li><li><a href="#sec-3">第二部分：两大核心技术原理</a><ul><li><a href="#fpc">技术一：FPC（前向概率计数器）—— 解决“误预测代价太高”</a></li><li><a href="#vtage">技术二：VTAGE（值标记几何预测器）—— 解决“背靠背预测瓶颈”</a></li></ul></li><li><a href="#sec-6">第三部分：完整工作流程</a><ul><li><a href="#fetch">阶段一：取指（Fetch）</a></li><li><a href="#dispatchexecute">阶段二：分派/执行（Dispatch/Execute）</a></li><li><a href="#verifycommit">阶段三：验证/提交（Verify/Commit）</a></li><li><a href="#update">阶段四：学习/更新（Update）</a></li></ul></li><li><a href="#sec-11">第四部分：整个系统的全景图</a></li><li><a href="#sec-12">第五部分：总结</a></li></ul></nav><main>
+<div class="doc-head"><span class="doc-label">✍️ Urim</span><div class="doc-meta"><span>📄 来源：预测器/value predictor.md</span><span>🕒 生成于 2026-08-19 10:10</span></div></div>
+<h1 id="practical-data-value-speculation-for-future-high-end-processors">论文：Practical data value speculation for future high-end processors</h1>
 <hr />
-<h2 id="sec-2-3">第一部分：论文要解决的根本问题</h2>
+<h2 id="sec-2">第一部分：论文要解决的根本问题</h2>
 <p>现代处理器靠<strong>乱序执行</strong>来提升性能，但<strong>真正的数据依赖</strong>（True Data Dependency）是乱序执行无法逾越的瓶颈：</p>
 <pre class="codehilite"><code>指令A: r1 = load [addr]
 指令B: r2 = r1 + 5   ← 必须等A的结果算出来才能执行，这就是数据依赖
@@ -492,7 +492,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tbody>
 </table></div>
 <hr />
-<h2 id="sec-3-2">第二部分：两大核心技术原理</h2>
+<h2 id="sec-3">第二部分：两大核心技术原理</h2>
 <h3 id="fpc">技术一：FPC（前向概率计数器）—— 解决“误预测代价太高”</h3>
 <p><strong>目标</strong>：让预测准确率从95%提升到99.7%以上。</p>
 <p><strong>原理</strong>：传统的置信计数器（3位，0~7）是“正确就+1，错误就归零”。但+1是<strong>必然发生</strong>的，连续正确7次就能饱和→被采纳。这个门槛太低，很多“运气好”的条目会被采纳，后续出错。</p>
@@ -600,7 +600,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tbody>
 </table></div>
 <hr />
-<h2 id="sec-6-1">第三部分：完整工作流程</h2>
+<h2 id="sec-6">第三部分：完整工作流程</h2>
 <h3 id="fetch">阶段一：取指（Fetch）</h3>
 <pre class="codehilite"><code>取指单元取出指令，同时拿到：
   - 当前指令PC
